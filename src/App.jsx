@@ -14,6 +14,7 @@ function App() {
   // Custom Typography states
   const [customFont, setCustomFont] = useState('default')
   const [customColor, setCustomColor] = useState('default')
+  const [customBgColor, setCustomBgColor] = useState('default')
   const [customSize, setCustomSize] = useState('md')
 
   const templateRef = useRef(null)
@@ -44,9 +45,11 @@ function App() {
   ];
 
   const fontColors = [
-    { id: 'default', label: 'Color del Tema', bg: 'bg-gradient-to-r from-gray-400 to-gray-600' },
+    { id: 'default', label: 'Por Defecto', bg: 'bg-gradient-to-r from-gray-400 to-gray-600' },
     { id: '#ffffff', label: 'Blanco Puro', bg: 'bg-white border border-gray-300' },
     { id: '#000000', label: 'Negro Tinta', bg: 'bg-black' },
+    { id: '#09090b', label: 'Negro Profundo', bg: 'bg-[#09090b]' },
+    { id: '#eaddcf', label: 'Papel Crema', bg: 'bg-[#eaddcf]' },
     { id: '#d4af37', label: 'Oro Clásico', bg: 'bg-[#d4af37]' },
     { id: '#ff71ce', label: 'Rosa Neón', bg: 'bg-[#ff71ce]' },
     { id: '#bf360c', label: 'Terracota', bg: 'bg-[#bf360c]' },
@@ -110,7 +113,7 @@ function App() {
           {/* NUEVO: Personalización del Texto */}
           <section className="flex flex-col gap-4 pt-6 border-t border-zinc-800">
             <h3 className="font-sans text-xs uppercase font-medium tracking-widest text-zinc-400 flex items-center gap-2">
-              <Type size={14} /> Ajustes de Tipografía
+              <Type size={14} /> Ajustes de Tipografía y Color
             </h3>
             
             {/* Tamaño */}
@@ -143,16 +146,31 @@ function App() {
               </select>
             </div>
 
-            {/* Color */}
-            <div className="flex items-center gap-3">
-              <Droplets size={14} className="text-zinc-500" />
-              <div className="flex-1 flex gap-2 flex-wrap">
+            {/* Color de Texto */}
+            <div className="flex items-start flex-col gap-2 mt-2">
+              <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Texto</label>
+              <div className="w-full flex gap-2 flex-wrap">
                 {fontColors.map(c => (
                   <button
                     key={c.id}
                     onClick={() => setCustomColor(c.id)}
                     title={c.label}
                     className={`w-6 h-6 rounded-full ${c.bg} transition-all ${customColor === c.id ? 'ring-2 ring-zinc-300 ring-offset-2 ring-offset-zinc-950 scale-110' : 'hover:scale-110'}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Color de Fondo */}
+            <div className="flex items-start flex-col gap-2 mt-2">
+              <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Fondo</label>
+              <div className="w-full flex gap-2 flex-wrap">
+                {fontColors.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => setCustomBgColor(c.id)}
+                    title={c.label}
+                    className={`w-6 h-6 rounded-full ${c.bg} transition-all ${customBgColor === c.id ? 'ring-2 ring-zinc-300 ring-offset-2 ring-offset-zinc-950 scale-110' : 'hover:scale-110'}`}
                   />
                 ))}
               </div>

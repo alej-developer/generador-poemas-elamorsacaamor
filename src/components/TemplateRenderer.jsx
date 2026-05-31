@@ -14,7 +14,8 @@ const TemplateRenderer = forwardRef(({
   showSafeZones,
   customFont,
   customColor,
-  customSize
+  customSize,
+  customBgColor
 }, ref) => {
   // Formatos soportados
   const formatStyles = {
@@ -62,7 +63,6 @@ const TemplateRenderer = forwardRef(({
       author: 'text-[#a1a1aa] font-["Montserrat"] font-medium text-xs mt-10 z-10 tracking-[0.2em] uppercase',
       decorative: null
     },
-    // NUEVOS ESTILOS DE ARTE CLÁSICO
     'renaissance': {
       container: 'bg-[#d8cbb8] p-10 md:p-14 flex flex-col justify-center items-center relative overflow-hidden shadow-[inset_0_0_80px_rgba(92,64,51,0.3)]',
       text: 'text-[#3e2723] font-["Cinzel"] text-[1.125rem] leading-[2] text-center z-10 mix-blend-multiply',
@@ -81,7 +81,6 @@ const TemplateRenderer = forwardRef(({
       author: 'text-[#00695c] font-["Caveat"] text-xl mt-6 z-10',
       decorative: (
         <>
-          {/* Manchas suaves tipo Monet */}
           <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-[#b2dfdb] rounded-full mix-blend-multiply filter blur-[40px] opacity-70"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-[#c8e6c9] rounded-full mix-blend-multiply filter blur-[40px] opacity-70"></div>
           <div className="absolute top-[30%] right-[10%] w-48 h-48 bg-[#ffcdd2] rounded-full mix-blend-multiply filter blur-[50px] opacity-40"></div>
@@ -95,7 +94,6 @@ const TemplateRenderer = forwardRef(({
       author: 'text-[#d84315] font-["Montserrat"] font-bold text-xs mt-10 z-10 tracking-[0.4em] uppercase',
       decorative: (
         <>
-          {/* Sombras y gradientes distorsionados tipo Dalí */}
           <div className="absolute bottom-0 left-0 w-full h-[40%] bg-gradient-to-t from-[#ffb74d] to-transparent"></div>
           <div className="absolute top-[20%] right-[-10%] w-32 h-64 bg-[#ffcc80] rounded-[100%] rotate-45 filter blur-[20px] mix-blend-multiply opacity-60"></div>
           <div className="absolute bottom-[10%] left-[20%] w-48 h-12 bg-[#8d6e63] rounded-[100%] mix-blend-overlay filter blur-[10px] opacity-40 skew-x-12"></div>
@@ -106,7 +104,6 @@ const TemplateRenderer = forwardRef(({
 
   const currentTheme = themes[styleTheme] || themes['dark_academia'];
 
-  // Para preservar los saltos de línea
   const formattedText = text.split('\n').map((line, i) => (
     <React.Fragment key={i}>
       {line === '' ? <span className="block h-4"></span> : line}
@@ -114,7 +111,6 @@ const TemplateRenderer = forwardRef(({
     </React.Fragment>
   ));
 
-  // Tamaños personalizados basados en la selección
   const sizeMap = {
     'sm': '0.8em',
     'md': '1em',
@@ -138,6 +134,7 @@ const TemplateRenderer = forwardRef(({
       )}
       style={{
         minHeight: (format === 'tiktok' || format === 'instagram_story') ? '700px' : '560px',
+        ...(customBgColor && customBgColor !== 'default' ? { backgroundColor: customBgColor } : {})
       }}
     >
       {currentTheme.decorative}
