@@ -37,3 +37,53 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #52525b;
 }
+
+/* -------------------------------------
+   BOTÓN "EL GRITO" (Munch)
+-------------------------------------- */
+@keyframes scream-blob {
+  0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+}
+
+@keyframes scream-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-el-grito {
+  background: linear-gradient(45deg, #d35400, #e67e22, #1a252f, #2980b9);
+  background-size: 300% 300%;
+  animation: scream-blob 4s ease-in-out infinite, scream-gradient 6s ease infinite;
+  box-shadow: 0 0 20px rgba(211, 84, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.5);
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-el-grito::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+  transform: rotate(45deg);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.btn-el-grito:hover {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 0 30px rgba(230, 126, 34, 0.8), inset 0 0 20px rgba(0,0,0,0.8);
+  filter: hue-rotate(15deg) contrast(1.2);
+}
+
+.btn-el-grito:active {
+  transform: scale(0.95) rotate(5deg);
+  animation-duration: 1s, 2s;
+}

@@ -71,9 +71,9 @@ function App() {
         <button 
           onClick={handleExport}
           disabled={isExporting}
-          className="px-6 py-2.5 bg-zinc-100 hover:bg-white text-zinc-900 font-sans text-xs font-bold tracking-widest uppercase transition-all rounded-sm disabled:opacity-70 flex items-center gap-2"
+          className="btn-el-grito px-8 py-3 font-['Caveat'] text-2xl tracking-wide disabled:opacity-70 flex items-center gap-3 z-20"
         >
-          {isExporting ? <span className="animate-pulse flex items-center gap-2">Exportando...</span> : <><Download size={16} /> Descargar</>}
+          {isExporting ? <span className="animate-pulse flex items-center gap-2">Distorsionando...</span> : <><Download size={22} /> Exportar Obra</>}
         </button>
       </header>
 
