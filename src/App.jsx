@@ -15,7 +15,7 @@ function App() {
   const [customFont, setCustomFont] = useState('default')
   const [customColor, setCustomColor] = useState('default')
   const [customBgColor, setCustomBgColor] = useState('default')
-  const [useBgGradient, setUseBgGradient] = useState(false)
+  const [bgGradientIntensity, setBgGradientIntensity] = useState(0)
   const [customSize, setCustomSize] = useState('md')
 
   const templateRef = useRef(null)
@@ -164,16 +164,8 @@ function App() {
 
             {/* Color de Fondo */}
             <div className="flex items-start flex-col gap-2 mt-2">
-              <div className="w-full flex items-center justify-between">
-                <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Fondo</label>
-                <button 
-                  onClick={() => setUseBgGradient(!useBgGradient)}
-                  className={`text-[10px] px-2 py-0.5 rounded border ${useBgGradient ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50' : 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}
-                >
-                  DEGRADADO
-                </button>
-              </div>
-              <div className="w-full flex gap-2 flex-wrap">
+              <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Fondo</label>
+              <div className="w-full flex gap-2 flex-wrap mb-2">
                 {fontColors.map(c => (
                   <button
                     key={c.id}
@@ -183,6 +175,24 @@ function App() {
                   />
                 ))}
               </div>
+              
+              {/* Degradado Slider */}
+              {customBgColor !== 'default' && (
+                <div className="w-full flex flex-col gap-2 mt-1 bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
+                  <div className="w-full flex justify-between items-center">
+                    <label className="text-[10px] text-zinc-400 uppercase tracking-widest font-medium">Intensidad del Degradado</label>
+                    <span className="text-[10px] text-zinc-300 bg-zinc-800 px-2 py-0.5 rounded">{bgGradientIntensity}%</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={bgGradientIntensity}
+                    onChange={(e) => setBgGradientIntensity(parseInt(e.target.value))}
+                    className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                  />
+                </div>
+              )}
             </div>
           </section>
 
@@ -288,7 +298,7 @@ function App() {
                 customColor={customColor}
                 customSize={customSize}
                 customBgColor={customBgColor}
-                useBgGradient={useBgGradient}
+                bgGradientIntensity={bgGradientIntensity}
               />
             </div>
           </div>

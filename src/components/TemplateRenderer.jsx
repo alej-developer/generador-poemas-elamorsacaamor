@@ -16,7 +16,7 @@ const TemplateRenderer = forwardRef(({
   customColor,
   customSize,
   customBgColor,
-  useBgGradient
+  bgGradientIntensity
 }, ref) => {
   // Formatos soportados
   const formatStyles = {
@@ -127,10 +127,11 @@ const TemplateRenderer = forwardRef(({
 
   const getCustomBgStyle = () => {
     if (!customBgColor || customBgColor === 'default') return {};
-    if (useBgGradient) {
-      return { background: `linear-gradient(135deg, ${customBgColor} 0%, #09090b 100%)` };
+    if (bgGradientIntensity > 0) {
+      // Usar 'background' en vez de 'backgroundColor' anula cualquier gradiente de Tailwind
+      return { background: `linear-gradient(135deg, ${customBgColor} ${100 - bgGradientIntensity}%, #000000 100%)` };
     }
-    return { backgroundColor: customBgColor };
+    return { background: customBgColor };
   };
 
   return (
