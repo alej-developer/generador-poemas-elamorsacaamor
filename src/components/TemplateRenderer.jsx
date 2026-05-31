@@ -6,16 +6,17 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-const TemplateRenderer = forwardRef(({ 
-  text, 
-  author, 
-  styleTheme, 
-  format, 
+const TemplateRenderer = forwardRef(({
+  text,
+  author,
+  styleTheme,
+  format,
   showSafeZones,
   customFont,
   customColor,
   customSize,
-  customBgColor
+  customBgColor,
+  useBgGradient
 }, ref) => {
   // Formatos soportados
   const formatStyles = {
@@ -124,8 +125,16 @@ const TemplateRenderer = forwardRef(({
     ...(customSize && customSize !== 'md' ? { fontSize: `calc(100% * ${parseFloat(sizeMap[customSize])})` } : {})
   };
 
+  const getCustomBgStyle = () => {
+    if (!customBgColor || customBgColor === 'default') return {};
+    if (useBgGradient) {
+      return { background: `linear-gradient(135deg, ${customBgColor} 0%, #09090b 100%)` };
+    }
+    return { backgroundColor: customBgColor };
+  };
+
   return (
-    <div 
+    <div
       ref={ref}
       className={cn(
         "relative flex mx-auto shadow-2xl transition-all duration-300",
@@ -134,21 +143,21 @@ const TemplateRenderer = forwardRef(({
       )}
       style={{
         minHeight: (format === 'tiktok' || format === 'instagram_story') ? '700px' : '560px',
-        ...(customBgColor && customBgColor !== 'default' ? { backgroundColor: customBgColor } : {})
+        ...getCustomBgStyle()
       }}
     >
       {currentTheme.decorative}
-      
-      <div className={cn("relative z-10 w-full flex flex-col h-full", 
+
+      <div className={cn("relative z-10 w-full flex flex-col h-full",
         styleTheme === 'vintage' ? 'justify-center items-start' : 'justify-center items-center'
       )}>
-        <div 
+        <div
           className={cn("max-h-[85%] overflow-hidden", currentTheme.text)}
           style={{ ...customTextStyles, transition: 'all 0.3s ease' }}
         >
           {formattedText}
         </div>
-        
+
         {author && (
           <p className={currentTheme.author}>
             {author}
@@ -164,7 +173,7 @@ const TemplateRenderer = forwardRef(({
           </div>
           <div className="flex-1 flex justify-end">
             <div className="h-full w-[18%] bg-red-500/20 border-l border-red-500/50 flex items-center justify-center">
-               <span className="text-white text-[10px] font-bold uppercase tracking-widest rotate-90 whitespace-nowrap drop-shadow-md">Iconos (Like, Guardar)</span>
+              <span className="text-white text-[10px] font-bold uppercase tracking-widest rotate-90 whitespace-nowrap drop-shadow-md">Iconos (Like, Guardar)</span>
             </div>
           </div>
           <div className="w-full h-[20%] bg-red-500/20 border-t border-red-500/50 flex items-center justify-center">

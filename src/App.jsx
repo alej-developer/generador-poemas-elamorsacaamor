@@ -15,6 +15,7 @@ function App() {
   const [customFont, setCustomFont] = useState('default')
   const [customColor, setCustomColor] = useState('default')
   const [customBgColor, setCustomBgColor] = useState('default')
+  const [useBgGradient, setUseBgGradient] = useState(false)
   const [customSize, setCustomSize] = useState('md')
 
   const templateRef = useRef(null)
@@ -163,7 +164,15 @@ function App() {
 
             {/* Color de Fondo */}
             <div className="flex items-start flex-col gap-2 mt-2">
-              <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Fondo</label>
+              <div className="w-full flex items-center justify-between">
+                <label className="text-[10px] text-zinc-500 uppercase tracking-widest">Color del Fondo</label>
+                <button 
+                  onClick={() => setUseBgGradient(!useBgGradient)}
+                  className={`text-[10px] px-2 py-0.5 rounded border ${useBgGradient ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50' : 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}
+                >
+                  DEGRADADO
+                </button>
+              </div>
               <div className="w-full flex gap-2 flex-wrap">
                 {fontColors.map(c => (
                   <button
@@ -267,20 +276,20 @@ function App() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-800 to-zinc-900 opacity-50"></div>
           
           <div className="relative w-full h-full flex items-center justify-center overflow-auto">
-            <div className="p-4 md:p-8 flex items-center justify-center w-full h-full">
-              <div className="transform transition-all duration-300 ease-in-out shadow-2xl ring-1 ring-white/10 mx-auto">
-                <TemplateRenderer 
-                  ref={templateRef}
-                  text={text}
-                  author={author}
-                  format={format}
-                  styleTheme={theme}
-                  showSafeZones={showSafeZones}
-                  customFont={customFont}
-                  customColor={customColor}
-                  customSize={customSize}
-                />
-              </div>
+            <div className="w-full max-w-[500px] flex justify-center items-center">
+              <TemplateRenderer 
+                ref={templateRef}
+                text={text}
+                author={author}
+                styleTheme={theme}
+                format={format}
+                showSafeZones={showSafeZones}
+                customFont={customFont}
+                customColor={customColor}
+                customSize={customSize}
+                customBgColor={customBgColor}
+                useBgGradient={useBgGradient}
+              />
             </div>
           </div>
         </section>
