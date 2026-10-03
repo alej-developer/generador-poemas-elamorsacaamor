@@ -87,3 +87,8 @@
   transform: scale(0.95) rotate(5deg);
   animation-duration: 1s, 2s;
 }
+
+.btn-el-grito:focus-visible {
+  outline: 2px solid #f6ead2;
+  outline-offset: 3px;
+}
