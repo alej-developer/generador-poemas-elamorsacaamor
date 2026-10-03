@@ -28,6 +28,9 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Fijar la versión de npm
+        run: npm install -g npm@11.6.2
+
       - name: Instalar dependencias
         run: npm ci
 
@@ -78,6 +81,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
+
+      - name: Fijar la versión de npm
+        run: npm install -g npm@11.6.2
 
       - name: Instalar dependencias
         run: npm ci
