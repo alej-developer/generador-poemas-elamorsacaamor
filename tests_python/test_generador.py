@@ -1,86 +1,99 @@
+import os
 import re
-import pytest
+from pathlib import Path
+
 from playwright.sync_api import Page, expect
 
-# Usamos la URL pública que acabamos de desplegar para garantizar que siempre esté disponible
-# (También se podría usar "http://localhost:5173" o "5174" para pruebas locales)
-BASE_URL = "https://alej-developer.github.io/generador-poemas-elamorsacaamor/"
+BASE_URL = os.environ.get(
+    "BASE_URL",
+    "http://127.0.0.1:4173/generador-poemas-elamorsacaamor/",
+)
+
 
 def test_1_page_loads_correctly(page: Page):
-    """Test 1: Verifica que la página cargue y el título principal sea correcto."""
+    """La página muestra el nombre del generador."""
     page.goto(BASE_URL)
-    # Verificamos que el H1 del header contenga el título del generador
-    header_title = page.locator("h1")
-    expect(header_title).to_have_text("El Amor Saca Amor")
+    expect(page.locator("h1")).to_have_text("El Amor Saca Amor")
+    expect(page).to_have_title("El Amor Saca Amor")
+
 
 def test_2_default_text_is_present(page: Page):
-    """Test 2: Verifica que haya un poema por defecto cargado en el área de texto."""
+    """El área de texto abre con un poema de ejemplo."""
     page.goto(BASE_URL)
-    textarea = page.locator("textarea")
-    # El poema inicial comienza con "El joven se puso a pensar"
-    expect(textarea).to_contain_text("El joven se puso a pensar")
+    expect(page.locator("textarea")).to_contain_text("El joven se puso a pensar")
+
 
 def test_3_author_signature_updates(page: Page):
-    """Test 3: Simula la escritura de una nueva firma y verifica que aparezca en el lienzo."""
+    """La firma escrita en el panel aparece en el lienzo."""
     page.goto(BASE_URL)
-    # Buscamos el input del autor por su placeholder
     author_input = page.get_by_placeholder("La Firma (Ej: #ArabiaDM)")
-    
-    # Borramos y escribimos un nuevo autor
-    author_input.fill("")
     author_input.fill("#ElPoetaAutomatizado")
-    
-    # Buscamos en el DOM si se ha renderizado el texto en el lienzo
-    canvas_author = page.locator("text=#ElPoetaAutomatizado")
-    expect(canvas_author).to_be_visible()
+    expect(page.get_by_text("#ElPoetaAutomatizado")).to_be_visible()
+
 
 def test_4_format_selection_changes_canvas_size(page: Page):
-    """Test 4: Verifica que al seleccionar 'TikTok 9:16' el lienzo cambie a formato vertical."""
+    """El formato de TikTok aplica el lienzo vertical."""
     page.goto(BASE_URL)
-    # Localizamos el lienzo principal por sus clases constantes
-    template = page.locator("div.shadow-2xl.transition-all").first
-    
-    # Hacemos clic en el botón de TikTok
-    tiktok_button = page.locator("button:has-text('TikTok 9:16')")
-    tiktok_button.click()
-    
-    # El formato vertical aplica la clase max-w-[350px] de Tailwind
+    template = page.locator("[data-canvas='preview']")
+    page.get_by_role("button", name="TikTok 9:16").click()
     expect(template).to_have_class(re.compile(r"max-w-\[350px\]"))
 
+
 def test_5_theme_selection_changes_background(page: Page):
-    """Test 5: Verifica que al seleccionar 'El Surrealista', el fondo cambie de color."""
+    """El tema surrealista cambia el color de fondo del lienzo."""
     page.goto(BASE_URL)
-    template = page.locator("div.shadow-2xl.transition-all").first
-    
-    # Clic en el botón del tema surrealista
-    surreal_button = page.locator("button:has-text('El Surrealista')")
-    surreal_button.click()
-    
-    # El tema surrealista utiliza el color de fondo #ffe0b2
+    template = page.locator("[data-canvas='preview']")
+    page.get_by_role("button", name="El Surrealista").click()
     expect(template).to_have_class(re.compile(r"bg-\[#ffe0b2\]"))
 
+
 def test_6_safe_zones_toggle_shows_overlays(page: Page):
-    """Test 6: Verifica que al activar 'Zonas Seguras' en TikTok, aparezcan las guías rojas."""
+    """Las zonas seguras de TikTok marcan la interfaz de la aplicación."""
     page.goto(BASE_URL)
-    # Primero necesitamos estar en modo TikTok para ver el interruptor
-    page.locator("button:has-text('TikTok 9:16')").click()
-    
-    # Hacemos clic en el checkbox (forzamos el clic porque el input está oculto debajo de un div estilizado)
-    safe_zone_toggle = page.locator("input[type='checkbox']")
-    safe_zone_toggle.check(force=True)
-    
-    # Verificamos que aparezca el texto de la guía superior de TikTok
-    safe_zone_text = page.locator("text=Siguiendo / Para Ti")
-    expect(safe_zone_text).to_be_visible()
+    page.get_by_role("button", name="TikTok 9:16").click()
+    page.get_by_role("checkbox", name="Zonas seguras").check(force=True)
+    expect(page.get_by_text("Siguiendo / Para Ti")).to_be_visible()
+
 
 def test_7_export_button_shows_loading_state(page: Page):
-    """Test 7: Verifica que al hacer clic en 'Descargar', el botón cambie a estado de exportación."""
+    """Al exportar, el botón informa de que la imagen se está preparando."""
     page.goto(BASE_URL)
-    export_button = page.locator("button:has-text('Descargar')")
-    
-    # Hacemos clic en exportar
-    export_button.click()
-    
-    # El botón debe cambiar su texto a "Exportando..." temporalmente
-    loading_state = page.locator("text=Exportando...")
-    expect(loading_state).to_be_visible()
+    page.get_by_role("button", name="Exportar Obra").click()
+    expect(page.get_by_text("Distorsionando...")).to_be_visible()
+
+
+def test_8_overflow_warning(page: Page):
+    """Un poema demasiado largo avisa de que no cabe en el formato."""
+    page.goto(BASE_URL)
+    page.locator("textarea").fill("\n".join(["verso largo de prueba"] * 40))
+    expect(page.get_by_role("status")).to_contain_text("no cabe en este formato")
+
+
+def png_size(path):
+    data = Path(path).read_bytes()
+    return int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big")
+
+
+def test_10_mobile_switches_between_edit_and_preview(page: Page):
+    """En el móvil se alterna entre el panel y la obra."""
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.goto(BASE_URL)
+    expect(page.get_by_role("button", name="Ver obra")).to_be_visible()
+    expect(page.locator("textarea")).to_be_visible()
+    page.get_by_role("button", name="Ver obra").click()
+    expect(page.locator("[data-canvas='preview']")).to_be_visible()
+    expect(page.locator("textarea")).to_be_hidden()
+
+
+def test_9_export_uses_social_canvas(page: Page):
+    """La imagen exportada sale a 1080 px, el tamaño de las redes."""
+    page.goto(BASE_URL)
+    with page.expect_download() as download_info:
+        page.get_by_role("button", name="Exportar Obra").click()
+    post = download_info.value
+    assert png_size(post.path()) == (1080, 1350)
+
+    page.get_by_role("button", name="TikTok 9:16").click()
+    with page.expect_download() as story_info:
+        page.get_by_role("button", name="Exportar Obra").click()
+    assert png_size(story_info.value.path()) == (1080, 1920)
